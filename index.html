@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confirmado - FoodAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: bounce 0.6s ease-out;
+        }
+
+        .success-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .open-app-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .open-app-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .fallback-text {
+            color: #888;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .download-links {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .download-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon"></div>
+        <h1>¡Email Confirmado!</h1>
+        <p class="subtitle">Tu cuenta ha sido verificada exitosamente. Ya puedes usar todas las funciones de FoodAI.</p>
+        
+        <button class="open-app-btn" onclick="openApp()">
+            Abrir FoodAI
+        </button>
+        
+        <p class="fallback-text" id="fallback-text">
+            Si no tienes la app instalada, puedes descargarla desde:
+        </p>
+        
+        <div class="download-links" id="download-links">
+            <a href="#" class="download-link" id="android-link">Google Play</a>
+            <a href="#" class="download-link" id="ios-link">App Store</a>
+        </div>
+    </div>
+
+    <script>
+        // Detectar tipo de dispositivo
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (/android/.test(userAgent)) {
+                return 'android';
+            } else if (/iphone|ipad|ipod/.test(userAgent)) {
+                return 'ios';
+            } else {
+                return 'desktop';
+            }
+        }
+
+        // Intentar abrir la app
+        function openApp() {
+            const device = detectDevice();
+            let deepLink = '';
+            
+            switch(device) {
+                case 'android':
+                    deepLink = 'foodai://confirm';
+                    break;
+                case 'ios':
+                    deepLink = 'foodai://confirm';
+                    break;
+                default:
+                    showDownloadLinks();
+                    return;
+            }
+
+            // Intentar abrir la app
+            window.location.href = deepLink;
+            
+            // Si no se puede abrir la app, mostrar links de descarga después de 2 segundos
+            setTimeout(() => {
+                showDownloadLinks();
+            }, 2000);
+        }
+
+        // Mostrar links de descarga
+        function showDownloadLinks() {
+            document.getElementById('download-links').style.display = 'block';
+            document.getElementById('fallback-text').style.display = 'block';
+        }
+
+        // Configurar links de descarga (cuando estén disponibles)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Estos links se configurarán cuando la app esté en las tiendas
+            // document.getElementById('android-link').href = 'https://play.google.com/store/apps/details?id=com.yourapp.foodai';
+            // document.getElementById('ios-link').href = 'https://apps.apple.com/app/foodai/idXXXXXXXXX';
+        });
+
+        // Auto-intentar abrir app en dispositivos móviles
+        window.addEventListener('load', function() {
+            const device = detectDevice();
+            if (device === 'android' || device === 'ios') {
+                // Auto-intento después de 1 segundo para mejor UX
+                setTimeout(openApp, 1000);
+            } else {
+                showDownloadLinks();
+            }
+        });
+    </script>
+</body>
+</html>
