@@ -92,23 +92,6 @@
             margin-top: 20px;
         }
 
-        .download-links {
-            margin-top: 20px;
-            display: none;
-        }
-
-        .download-link {
-            display: inline-block;
-            margin: 0 10px;
-            color: #ff6b35;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .download-link:hover {
-            text-decoration: underline;
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 30px 20px;
@@ -123,10 +106,10 @@
 <body>
     <div class="container">
         <div class="success-icon"></div>
-        <h1>¡Email Confirmado!</h1>
-        <p class="subtitle">Tu cuenta ha sido verificada exitosamente. Ya puedes usar todas las funciones de FoodAI.</p>
+        <h1 id="title">¡Email Confirmado!</h1>
+        <p class="subtitle" id="subtitle">Tu cuenta ha sido verificada exitosamente. Ya puedes usar todas las funciones de FoodAI.</p>
         
-        <button class="open-app-btn" onclick="openApp()">
+        <button class="open-app-btn" id="open-btn" onclick="openApp()">
             Abrir FoodAI
         </button>
         
@@ -136,6 +119,55 @@
     </div>
 
     <script>
+        // Traducciones
+        const translations = {
+            es: {
+                title: '¡Email Confirmado!',
+                subtitle: 'Tu cuenta ha sido verificada exitosamente. Ya puedes usar todas las funciones de FoodAI.',
+                button: 'Abrir FoodAI',
+                fallback: 'Si el botón no funciona, puedes abrir la app manualmente.'
+            },
+            en: {
+                title: 'Email Confirmed!',
+                subtitle: 'Your account has been successfully verified. You can now use all FoodAI features.',
+                button: 'Open FoodAI',
+                fallback: 'If the button doesn\'t work, you can open the app manually.'
+            },
+            fr: {
+                title: 'Email Confirmé!',
+                subtitle: 'Votre compte a été vérifié avec succès. Vous pouvez maintenant utiliser toutes les fonctionnalités de FoodAI.',
+                button: 'Ouvrir FoodAI',
+                fallback: 'Si le bouton ne fonctionne pas, vous pouvez ouvrir l\'application manuellement.'
+            }
+        };
+
+        // Detectar idioma de la URL o navegador
+        function getLanguage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            
+            if (langParam && translations[langParam]) {
+                return langParam;
+            }
+            
+            // Detectar del navegador
+            const browserLang = navigator.language.slice(0, 2);
+            return translations[browserLang] ? browserLang : 'en';
+        }
+
+        // Aplicar traducciones
+        function applyTranslations() {
+            const lang = getLanguage();
+            const t = translations[lang];
+            
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('open-btn').textContent = t.button;
+            document.getElementById('fallback-text').textContent = t.fallback;
+            document.documentElement.lang = lang;
+            document.title = t.title + ' - FoodAI';
+        }
+
         // Detectar tipo de dispositivo
         function detectDevice() {
             const userAgent = navigator.userAgent.toLowerCase();
@@ -165,10 +197,8 @@
                     return;
             }
 
-            // Intentar abrir la app
             window.location.href = deepLink;
             
-            // Si no se puede abrir la app, mostrar links de descarga después de 2 segundos
             setTimeout(() => {
                 showDownloadLinks();
             }, 2000);
@@ -179,12 +209,12 @@
             document.getElementById('fallback-text').style.display = 'block';
         }
 
-
-        // Auto-intentar abrir app en dispositivos móviles
-        window.addEventListener('load', function() {
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            applyTranslations();
+            
             const device = detectDevice();
             if (device === 'android' || device === 'ios') {
-                // Auto-intento después de 1 segundo para mejor UX
                 setTimeout(openApp, 1000);
             } else {
                 showDownloadLinks();
