@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -69,7 +69,7 @@
         }
 
         .open-app-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -100,7 +100,7 @@
         .download-link {
             display: inline-block;
             margin: 0 10px;
-            color: #667eea;
+            color: #ff6b35;
             text-decoration: none;
             font-weight: 600;
         }
@@ -130,14 +130,9 @@
             Abrir FoodAI
         </button>
         
-        <p class="fallback-text" id="fallback-text">
-            Si no tienes la app instalada, puedes descargarla desde:
+        <p class="fallback-text" id="fallback-text" style="display: none;">
+            Si el botón no funciona, puedes abrir la app manualmente.
         </p>
-        
-        <div class="download-links" id="download-links">
-            <a href="#" class="download-link" id="android-link">Google Play</a>
-            <a href="#" class="download-link" id="ios-link">App Store</a>
-        </div>
     </div>
 
     <script>
@@ -160,10 +155,10 @@
             
             switch(device) {
                 case 'android':
-                    deepLink = 'foodai://confirm';
+                    deepLink = 'foodai://email-confirmed';
                     break;
                 case 'ios':
-                    deepLink = 'foodai://confirm';
+                    deepLink = 'foodai://email-confirmed';
                     break;
                 default:
                     showDownloadLinks();
@@ -179,18 +174,11 @@
             }, 2000);
         }
 
-        // Mostrar links de descarga
+        // Mostrar mensaje alternativo
         function showDownloadLinks() {
-            document.getElementById('download-links').style.display = 'block';
             document.getElementById('fallback-text').style.display = 'block';
         }
 
-        // Configurar links de descarga (cuando estén disponibles)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Estos links se configurarán cuando la app esté en las tiendas
-            // document.getElementById('android-link').href = 'https://play.google.com/store/apps/details?id=com.yourapp.foodai';
-            // document.getElementById('ios-link').href = 'https://apps.apple.com/app/foodai/idXXXXXXXXX';
-        });
 
         // Auto-intentar abrir app en dispositivos móviles
         window.addEventListener('load', function() {
